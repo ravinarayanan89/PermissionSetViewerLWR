@@ -1,0 +1,70 @@
+<template>
+
+    <template if:true = {showComparisonAggregate}>
+
+            <lightning-layout multiple-rows class="slds-border_right">
+                <template for:each={permissions} for:item="permission">
+                    <lightning-layout-item padding="around-medium" size="3" key={permission.key}>
+                        <div data-key={permission.key} data-label={permission.label} onclick={openComparisonWindow}
+                            class="slds-is-relative custom-box slds-box slds-text-align_center"
+                            style="cursor:pointer;">
+                            <div class="slds-box">
+                            <lightning-layout multiple-rows>
+
+                                    <lightning-layout-item size="6">
+                                        <div style="font-size:2.625rem;color:rgb(186, 5, 23);" class="slds-border_right slds-text-align_center">  {permission.notExistingValuesLength} 
+                                        </div>
+                                    </lightning-layout-item>
+
+
+                                    <lightning-layout-item size="6">
+                                        <div style="font-size:2.625rem;color:#2e844a;" class="slds-text-align_center"> 
+                                            {permission.additionalValuesLength}
+                                        
+                                        </div>
+                                    </lightning-layout-item>
+                                  
+                                
+                                </lightning-layout>
+                            </div>
+                            
+                            <div class="slds-m-top_xx-small"> <p> <b> {permission.label} </b> </p> </div>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+    </template>
+
+    <template if:true = {showComparisonInDetail}>
+
+        <table class="slds-table slds-no-row-hover slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <template for:each={comparisonWindowHeaders} for:item="th">
+                        <th key = {th}>
+                        <div class="slds-truncate" title={th}>
+                            {th}
+                        </div>
+                    </th>
+                    </template>
+                </tr>
+            </thead>
+
+            <tbody>
+                <template for:each={comparisonData} for:item="data">
+                    <tr key={data.key} class = {data.bgClassName}>
+                        <td>
+                            <div class="slds-form-element"> {data.original} </div>
+                        </td>
+
+                        <td>
+                            <div class="slds-form-element"> {data.toCompare} </div>
+                        </td>
+                    </tr>
+                </template>
+         </tbody>
+        </table>
+
+    </template>
+
+</template>

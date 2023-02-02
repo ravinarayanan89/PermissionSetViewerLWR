@@ -1,0 +1,80 @@
+<template>
+
+    <template if:true={showDuplicate}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+            class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                    onclick={hideDuplicateModal}>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        {header}
+                    </h1>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+                    <nav role="navigation" class="slds-m-bottom_medium" aria-label="Breadcrumbs">
+                        <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                            <li class="slds-breadcrumb__item">
+                                <a href="#" onclick={showPermissionList}>Permissions List</a>
+                            </li>
+                            <li class="slds-breadcrumb__item">
+                                <a href="#" onclick={showComparisonDashboard}>Comparison Dashboard</a>
+                            </li>
+                            <li class="slds-breadcrumb__item">
+                                <a href="#" onclick={showComparisonList}>Comparison</a>
+                            </li>
+                        </ol>
+                    </nav>
+
+
+                    <template if:true={showDuplicateList}>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <template for:each={headers} for:item="th">
+                                        <th key={th}>
+                                            <div class="slds-truncate" title={th}>
+                                                {th}
+                                            </div>
+                                        </th>
+                                    </template>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <template for:each={permissionSetNames} for:item="data">
+                                    <tr key={data}>
+                                        <td>
+                                            <div class="slds-form-element"> {data} </div>
+                                        </td>
+
+                                        <td>
+                                            <lightning-button data-key={data} label="Compare" variant="brand"
+                                                onclick={doCompare}></lightning-button>
+                                        </td>
+
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+
+                    <permission360-comparison ></permission360-comparison>
+
+                </div>
+
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+
+
+
+</template>

@@ -1,0 +1,275 @@
+<template>
+    <div class="slds-builder-header_container">
+        <header class="slds-builder-header">
+            <div class="slds-builder-header__item">
+                <div class="slds-builder-header__item-label slds-media slds-media_center">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-utility-builder slds-current-color">
+                            <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#builder"></use>
+                            </svg>
+                        </span>
+
+                    </div>
+                    <div class="slds-media__body">Permission 360 &nbsp; &nbsp; |&nbsp; &nbsp; All
+                        PermissionSets</div>
+
+                </div>
+            </div>
+
+            <div class="slds-builder-header__item slds-has-flexi-truncate">
+                <div class="slds-builder-header__item-label">
+
+            
+
+                </div>
+            </div>
+            <div class="slds-builder-header__item slds-builder-header__utilities">
+                <div class="slds-builder-header__utilities-item">
+                    <a href="#" class="slds-builder-header__item-action slds-media slds-media_center">
+                        <span class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-utility-settings slds-current-color">
+                                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#settings"></use>
+                                </svg>
+                            </span>
+                        </span>
+                      
+                    </a>
+                </div>
+                <div class="slds-builder-header__utilities-item">
+                    <a href="#" class="slds-builder-header__item-action slds-media slds-media_center">
+                        <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-utility-help slds-current-color">
+                                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#help"></use>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">Help</div>
+                    </a>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <div class="slds-is-relative" style="margin-top:54px;">
+
+        <template if:true = {loading.full}>
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </template>
+
+        <lightning-layout multiple-rows>
+            <lightning-layout-item padding="around-medium" size="4">
+
+                <div class="slds-box" style="background:white;">
+                    <div class="slds-text-title_caps">All PermissionSets </div>
+                    <input type="text" class="slds-input slds-m-top_x-small slds-m-bottom_x-small"
+                        placeholder="Search .." label="Search PS"  style="flex-grow:1;"
+                        onkeypress={searchPermissionSets}></input>
+
+                    <div class="slds-border_bottom slds-m-top_x-small slds-m-bottom_x-small"></div>
+                    <div style="max-height:75vh;overflow-y:auto;">
+                        <ul class="slds-has-dividers_around slds-has-block-links_space">
+                            <template for:each={allPermissionSets} for:item="permission">
+                                <li data-key={permission.name} if:true={permission.visible} key={permission.name}
+                                    class="slds-item">
+                                    <a href="#" data-key={permission.name}
+                                        onclick={getPermissionSetDetails}>{permission.name}</a>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+            </lightning-layout-item>
+            
+            <lightning-layout-item padding="around-medium" size="8">
+                
+                <div class="slds-text-heading_medium slds-m-left_small">
+                    <template if:true = {isPermissionSelected}> {selectedPermission} </template> 
+                    <template if:false = {isPermissionSelected}> All Permissions </template>
+                </div>
+                <div class="slds-m-around_small slds-border_bottom"></div>
+
+
+                <lightning-layout multiple-rows class="slds-border_right">
+                    <template for:each={permissions} for:item="permission">
+                        <lightning-layout-item padding="around-medium" size="3" key={permission.label}>
+                            <div data-name={permission.name} data-label={permission.label} onclick={viewPermissions}
+                                class="slds-is-relative custom-box slds-box slds-p-around_medium slds-text-align_center"
+                                style="cursor:pointer;background:#1b96ff">
+                                <div style="font-size:2.625rem"> <b> {permission.value} </b> </div>
+                                <p> {permission.label} </p>
+                                <template if:true = {loading.specific_permissions}>
+                                    <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                                </template>
+                            </div>
+                        </lightning-layout-item>
+                    </template>
+
+                    <template if:true={isPermissionSelected}>
+                        <lightning-layout-item padding="around-medium" size="3" key={permission.label}>
+                            <div onclick={showDuplicatePermissionSets}
+                                class="slds-is-relative custom-box slds-box slds-p-around_medium slds-text-align_center"
+                                style="cursor:pointer;background:#ba0517;color:#f3f3f3;">
+                                <template if:true = {loading.duplicate}>
+                                    <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                                </template>
+                                <div style="font-size:2.625rem"> <b> {totalDuplicates} </b> </div>
+                                <p> Duplicates </p>
+                            </div>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item padding="around-medium" size="3" key={permission.label}>
+                            <div onclick={showSimilarDuplicatePermissionSets}
+                                class="slds-is-relative custom-box slds-box slds-p-around_medium slds-text-align_center"
+                                style="cursor:pointer;background:#fe9339;">
+                                <template if:true = {loading.duplicate}>
+                                    <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                                </template>
+                                <div style="font-size:2.625rem"> <b> {totalAlreadyCoveredPermissionSets} </b> </div>
+                                <p> Similar Permissions </p>
+                            </div>
+                        </lightning-layout-item>
+                       
+
+                        <lightning-layout-item padding="around-medium" size="3" key={permission.label}>
+                            <div onclick={compareAllPermissionSets}
+                                class="slds-is-relative custom-box slds-box slds-p-around_medium slds-text-align_center"
+                                style="cursor:pointer;background: #45c65a;">
+                                <div style="font-size:2.625rem"> <b> Compare </b> </div>
+                                <p> PermissionSet Comparison </p>
+                            </div>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </lightning-layout-item>
+
+        </lightning-layout>
+
+        <!-- show list -->
+        <template if:true={showListItems}>
+            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+                class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        onclick={closeModal}>
+                        <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                        </svg>
+                        <span class="slds-assistive-text">Cancel and close</span>
+                    </button>
+                    <div class="slds-modal__header">
+                        <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                            {selectedMetadata}
+                        </h1>
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+
+                
+
+
+                        <template if:true={showListItems}>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                                aria-label="List of Metadata">
+
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <template for:each={tableHeaders} for:item="th">
+                                            <th key={th} class="" scope="col">
+                                                <div class="slds-truncate" title={th}>
+                                                    {th}
+                                                </div>
+                                            </th>
+                                        </template>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={listItems} for:item="listitem">
+                                        <tr key={listitem.name}>
+                                            <td>
+                                                <div class="slds-truncate" title={listitem}>
+                                                    {listitem.name}
+                                                </div>
+                                            </td>
+
+                                            <template if:true = {listitem.fieldPermissions}>
+                                                <td>
+                                                    <lightning-icon if:true = {listitem.read} icon-name="action:approval" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+
+                                                    <lightning-icon if:false = {listitem.read} icon-name="action:close" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+                                                </td>
+
+                                                <td >
+                                                    <lightning-icon if:true = {listitem.edit} icon-name="action:approval" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+
+                                                    <lightning-icon if:false = {listitem.edit} icon-name="action:close" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+                                                </td>
+
+                    
+                                            </template>
+
+
+                                            <template if:true = {listitem.objectPermissions}>
+                                                <td>
+                                                    <lightning-icon if:true = {listitem.create} icon-name="action:approval" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+
+                                                    <lightning-icon if:false = {listitem.create} icon-name="action:close" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+                                                </td>
+
+                                                <td>
+                                                    <lightning-icon if:true = {listitem.read} icon-name="action:approval" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+
+                                                    <lightning-icon if:false = {listitem.read} icon-name="action:close" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+                                          
+                                                </td>
+
+                                                <td>
+                                                    <lightning-icon if:true = {listitem.edit} icon-name="action:approval" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+
+                                                    <lightning-icon if:false = {listitem.edit} icon-name="action:close" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+                                          
+                                                </td>
+
+                                                <td>
+                                                    <lightning-icon if:true = {listitem.delete} icon-name="action:approval" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+
+                                                    <lightning-icon if:false = {listitem.delete} icon-name="action:close" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+                                          
+                                                </td>
+
+                                                <td>
+                                                    <lightning-icon if:true = {listitem.viewall} icon-name="action:approval" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+
+                                                    <lightning-icon if:false = {listitem.viewall} icon-name="action:close" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+                                          
+                                                </td>
+
+                                                <td>
+                                                    <lightning-icon if:true = {listitem.modifyall} icon-name="action:approval" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+
+                                                    <lightning-icon if:false = {listitem.modifyall} icon-name="action:close" alternative-text="Enabled" title="Enabled" size="xx-small"></lightning-icon>
+                                          
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </template>
+                    </div>
+                    <div class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" aria-label="Cancel and close">Cancel</button>
+                        <button class="slds-button slds-button_brand">Save</button>
+                    </div>
+                </div>
+            </section>
+          
+            <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+        </template>
+
+
+        <permission360-duplicate></permission360-duplicate>
+   
+    </div>
+</template>

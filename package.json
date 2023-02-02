@@ -1,0 +1,30 @@
+{
+  "name": "permissionset360",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf __lwr_cache__",
+    "dev": "lwr serve",
+    "start": "node scripts/server",
+    "start:compat": "lwr serve --mode compat",
+    "start:prod-compat": "lwr serve --mode prod-compat",
+    "build": "node ./scripts/copy-slds.mjs"
+  },
+  "dependencies": {
+    "@lwc/synthetic-shadow": "^2.35.1",
+    "cpx": "^1.5.0",
+    "fs-extra": "^11.1.0",
+    "lightning-base-components": "^1.16.9-alpha",
+    "lwc": "2.17.0",
+    "lwr": "0.8.8",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@salesforce-ux/design-system": "^2.19.0"
+  },
+  "engines": {
+    "node": ">=14.15.4 <19"
+  }
+}

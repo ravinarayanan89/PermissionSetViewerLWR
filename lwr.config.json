@@ -1,0 +1,42 @@
+{
+    "lwc": { "modules": [
+        { "dir": "$rootDir/src/modules" }, 
+        { "npm": "lightning-base-components" }
+        ] },
+    "assets": [
+        {
+            "alias": "sldsDir",
+            "dir": "$rootDir/node_modules/@salesforce-ux/design-system/assets",
+            "urlPath": "/slds"
+        },
+        {
+            "alias": "assetsDir",
+            "dir": "$rootDir/src/assets",
+            "urlPath": "/assets"
+        },
+        {
+            "dir": "$rootDir/src/assets/fonts",
+            "urlPath": "/fonts"
+        },
+        {
+            "file": "$rootDir/src/assets/utilitySprite.svg",
+            "urlPath": "/lightning.utilitySprite"
+        }
+    ], "bundleConfig": { "exclude": [
+        "lwc", 
+        "lwr/navigation", 
+        "@lwc/synthetic-shadow"
+    ] },
+    "routes": [
+        {
+            "id": "permission360",
+            "path": "/",
+            "rootComponent": "permission360/app",
+            "layoutTemplate": "$layoutsDir/main.html",
+            "bootstrap": {
+                "syntheticShadow": true
+            }
+
+        }
+    ]
+}
